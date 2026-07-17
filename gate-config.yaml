@@ -1,0 +1,100 @@
+# =============================================================================
+# Research Quality Gate — configuration
+# =============================================================================
+# This file is the ONLY place company/project specifics and thresholds live.
+# To customize for a project WITHOUT touching the plugin: copy this file into
+# the research folder as `gate-config.yaml` and edit it there. A config found
+# in the research folder always overrides this plugin default.
+#
+# Changing thresholds here changes verdicts on the next run. No rebuild needed.
+# =============================================================================
+
+# --- Coverage map (used by the Breadth criterion) -----------------------------
+# Each area the research corpus MUST cover for the investment decision.
+# `covered_means` defines the minimum bar for an area to count as "analyzed"
+# rather than merely "mentioned" — the breadth agent scores against it.
+coverage_map:
+  - id: market_sizing
+    name: "Market sizing (TAM / SAM)"
+    covered_means: >
+      TAM and SAM are estimated with an explicit methodology (top-down,
+      bottom-up, or proxy-based with stated logic). Sub-markets with weak
+      public comparables are addressed via proxy estimates whose assumptions
+      are written out, not just asserted.
+  - id: competition_moat
+    name: "Competition and moat"
+    covered_means: >
+      Named competitors are identified and compared; the company's moat (or
+      lack of one) is analyzed with reasoning about durability, not just a
+      feature list.
+  - id: usp_differentiation
+    name: "USP / differentiation"
+    covered_means: >
+      The unique selling proposition is stated and tested against competitor
+      offerings; differentiation claims are tied to evidence (customer data,
+      product facts, third-party sources), not marketing language.
+  - id: exit_scenarios
+    name: "Exit scenarios (valuations, multipliers)"
+    covered_means: >
+      At least two exit scenarios with valuation ranges, the multiples used,
+      comparable transactions or public comps cited, and the logic connecting
+      the company's metrics to those multiples.
+
+# --- Scoring scale -------------------------------------------------------------
+# All criterion scores are reported on a 0–10 scale. Sub-judgments inside each
+# criterion use a 0–3 anchored scale (defined in the gate-methodology skill);
+# aggregation to 0–10 is done by formula, not by model judgment.
+
+# --- Thresholds (0–10; score >= threshold => PASS) -----------------------------
+thresholds:
+  breadth: 8.0
+  depth: 7.0
+  sources: 7.0
+
+# --- Hard-fail rules (override numeric score; criterion fails regardless) ------
+hard_fail:
+  breadth_missing_area: true        # any coverage area entirely absent => breadth FAIL
+  sources_fabricated_quote: true    # any fabricated/misattributed quote => sources FAIL
+  # Stricter optional regime: fail breadth if ANY area scores below this anchor
+  # level, even when the aggregate score clears the threshold. Set to 2 to
+  # require every area to genuinely meet its covered_means bar; null = off
+  # (default), meaning one thin area can be compensated by strong ones as long
+  # as the aggregate stays above the threshold.
+  breadth_area_below_level: null
+
+# --- Overall verdict rule -------------------------------------------------------
+# "all_pass": overall = PASS only if every criterion passes (recommended for a gate).
+# "weighted": overall = PASS if weighted average >= overall_threshold (weights below).
+overall:
+  rule: all_pass
+  # Used only for the informational weighted average shown in the summary,
+  # and for the verdict if rule is set to "weighted".
+  weights:
+    breadth: 0.35
+    depth: 0.35
+    sources: 0.30
+  overall_threshold: 7.5
+
+# --- Deck handling --------------------------------------------------------------
+# The draft deck is checked for breadth (does it reflect all coverage areas?)
+# and sources (are its figures traceable to the corpus?). Depth is judged on
+# the corpus only — a deck legitimately compresses.
+deck:
+  evaluate_breadth: true
+  evaluate_depth: false
+  evaluate_sources: true
+
+# --- Output ---------------------------------------------------------------------
+# Reports are written OUTSIDE the research folder to keep it strictly untouched.
+# {research_folder} expands to the target folder path; {timestamp} to run time.
+output:
+  directory: "{research_folder}-quality-gate/{timestamp}"
+
+# --- Source authority tiers (used by the Sources criterion) ---------------------
+# The source-verifier classifies every citation into a tier. Tier definitions
+# can be tuned per project (e.g., add trusted industry analysts).
+authority_tiers:
+  tier_1: "Primary sources: regulatory filings, official statistics, company financial statements, court records, peer-reviewed research"
+  tier_2: "Independent reputable secondary: major business press, established industry analysts, audited market research"
+  tier_3: "Interested or unverified: vendor blogs, press releases, company marketing, sponsored content"
+  tier_4: "Weak: forums, anonymous posts, AI-generated aggregator sites, dead links"
