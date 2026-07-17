@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "research-quality-gate",
-      "source": "./research-quality-gate/.claude-plugin",
+      "source": "./",
       "description": "Automated quality gate for investment research: scores breadth, depth, and source trustworthiness against configurable thresholds and produces per-criterion reports plus a joined pass/fail summary."
     }
   ]
