@@ -1,0 +1,13 @@
+{
+  "name": "delin-plugins",
+  "owner": {
+    "name": "Delin Capital"
+  },
+  "plugins": [
+    {
+      "name": "research-quality-gate",
+      "source": "./research-quality-gate",
+      "description": "Automated quality gate for investment research: scores breadth, depth, and source trustworthiness against configurable thresholds and produces per-criterion reports plus a joined pass/fail summary."
+    }
+  ]
+}
