@@ -1,6 +1,6 @@
 {
   "name": "research-quality-gate",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Automated quality gate for investment research. Evaluates a research folder and draft deck against three criteria (breadth, quality & depth, source trustworthiness), producing one evidence-based report per criterion plus a joined summary with numeric scores, configurable thresholds, and pass/not-pass verdicts. Read-only with respect to the research materials.",
   "author": {
     "name": "Delin Capital"
